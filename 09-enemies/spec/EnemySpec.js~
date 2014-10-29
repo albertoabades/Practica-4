@@ -107,11 +107,20 @@ describe("Clase Enemy", function(){
 		expect(gmbd.remove).toHaveBeenCalled();
 	});
 
-	it("draw", function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	it("hace bla bla", function(){
 	});
-
-
-
-
-
 });
