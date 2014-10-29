@@ -56,3 +56,119 @@
     colisionado con objetos de cierto tipo, no con todos los objetos.
 
 */
+describe("Clase GameBoard", function(){
+	var canvas, ctx;
+	
+	beforeEach(function(){
+	loadFixtures('index.html');
+	
+	canvas=$('#game')[0];
+	expect(canvas).toExist();
+	
+	ctx=canvas.getContext('2d');
+	expect(ctx).toBeDefined();
+	
+	oldGame=Game
+	Game = {width: 320, height:480};
+	});
+
+	afterEach(function(){
+	Game=oldGame;
+	});
+
+	it("draw", function(){
+		var gmbd = new GameBoard();
+		spyOn(gmbd,"iterate");
+		gmbd.draw(ctx);
+		expect(gmbd.iterate).toHaveBeenCalledWith("draw",ctx);
+	});
+
+	it("step",function(){
+		var gmbd = new GameBoard();
+		gmbd.add("cero");
+		gmbd.add("uno");
+		spyOn(gmbd,"resetRemoved");
+		spyOn(gmbd,"iterate");
+		spyOn(gmbd,"finalizeRemoved");
+		gmbd.step(1);
+		expect(gmbd.resetRemoved).toHaveBeenCalled();
+		expect(gmbd.iterate).toHaveBeenCalledWith('step',1);
+		expect(gmbd.finalizeRemoved).toHaveBeenCalled();
+	});
+
+	it("add",function(){
+		var gmbd = new GameBoard();
+		var foo="foo";
+		gmbd.add(foo);
+		expect(gmbd.objects[0]).toEqual("foo");
+	});
+
+	it("resetRemoved",function(){
+		var gmbd = new GameBoard();
+		gmbd.resetRemoved();
+		expect(gmbd.removed).toBeDefined();
+	});
+
+	it("remove",function(){
+		var gmbd = new GameBoard();
+		gmbd.resetRemoved();
+		gmbd.remove("cero");
+		expect(gmbd.removed).toBeDefined();
+		expect(gmbd.removed[0]).toEqual("cero");
+	});
+
+	it("finalizeRemoved",function(){
+		var gmbd = new GameBoard();
+		gmbd.add("cero");
+		gmbd.add("uno");
+		gmbd.add("dos");
+		gmbd.resetRemoved();
+		gmbd.remove("cero");
+		gmbd.remove("uno");
+		gmbd.remove("dos");
+		expect(gmbd.removed).toBeDefined();
+		expect(gmbd.removed.length).toEqual(3);
+		gmbd.finalizeRemoved();
+		expect(gmbd.objects.length).toEqual(0);
+	});
+
+	it("iterate",function(){
+		var gmbd = new GameBoard();
+		var funvacia= new function(){
+			this.func= function(){return true};
+		};
+		spyOn(funvacia,"func");
+		gmbd.add(funvacia);
+		gmbd.iterate('func');
+		expect(funvacia.func).toHaveBeenCalled();
+	});
+
+	it("detect",function(){
+		var gmbd = new GameBoard();
+		gmbd.add("cero");
+		gmbd.add("uno");
+		var functrue=function(){
+			return true;
+		};
+		expect(gmbd.detect(functrue)).toBe("cero");
+	});
+
+	it("overlap",function(){
+		var gmbd = new GameBoard();
+		var Rect = function(x,y,w,h){
+			this.x=x|0;
+			this.y=y|0;
+			this.w=w|0;
+			this.h=h|0;
+		}
+		var rect1 = new Rect(50,50,40,40);
+		var rect2 = new Rect(50,100,40,40);
+		var rect3 = new Rect(50,60,40,40);
+		expect(gmbd.overlap(rect1,rect2)).toBe(false);
+		expect(gmbd.overlap(rect1,rect3)).toBe(true);
+	});
+
+	it("collide",function(){
+	});
+
+});
