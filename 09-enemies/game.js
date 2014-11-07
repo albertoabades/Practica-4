@@ -202,8 +202,11 @@ var Fireball = function(x,y,direccion){
 	this.y = y - this.h;
 	
 	this.direccion = direccion;
-	this.vy = -1500;
-	this.vx = -300;
+	this.vx = -30;
+	this.vy = -700;
+
+    this.desplazX = -20;
+    this.desplazY = 30;
 
 	if(direccion == "izquierda"){
 		this.vx = -this.vx;
@@ -212,9 +215,10 @@ var Fireball = function(x,y,direccion){
 
 Fireball.prototype.step = function(dt){
 	this.x += dt * this.vx;
-	this.y += dt * this.vy;
+	this.desplazX += dt * Math.abs(this.vx);
+    this.x += dt * this.vx; 
+    this.y = this.desplazY + Math.pow(this.desplazX, 2); 
 
-	this.vy = this.vy + 200;
 	if(this.y > 500){this.board.remove(this);}
 };
 
