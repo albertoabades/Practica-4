@@ -32,7 +32,7 @@ var Game = new function() {
     };
 
     // Gestión de la entrada (teclas para izda/derecha y disparo)
-    var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };
+    var KEY_CODES = { 37:'left', 39:'right', 32 :'fire', 66: 'FireballDerecho', 78: 'FireballIzquierdo' };
     this.keys = {};
 
     this.setupInput = function() {
@@ -109,14 +109,21 @@ var SpriteSheet = new function() {
     //  frame para seleccionar el frame de un sprite que tenga varios
     //  como la explosion
     this.draw = function(ctx,sprite,x,y,frame) {
-	var s = this.map[sprite];
-	if(!frame) frame = 0;
-	ctx.drawImage(this.image,
-                      s.sx + frame * s.w, 
-                      s.sy, 
-                      s.w, s.h, 
-                      Math.floor(x), Math.floor(y),
-                      s.w, s.h);
+		var s = this.map[sprite];
+	if(sprite=="explosion"){
+		w = s.w/2;
+		h = s.h/2;
+	}else{
+		w = s.w;
+		h = s.h;
+	}
+		if(!frame) frame = 0;
+		ctx.drawImage(this.image,
+		                  s.sx + frame * s.w, 
+		                  s.sy, 
+		                  s.w, s.h, 
+		                  Math.floor(x), Math.floor(y),
+		                  w, h);
     };
 }
 
@@ -228,15 +235,15 @@ var GameBoard = function() {
     // inicializa la lista de objetos pendientes de borrar, y después
     // se borran los que hayan aparecido en dicha lista
     this.step = function(dt) { 
-	this.resetRemoved();
-	this.iterate('step',dt);
-	this.finalizeRemoved();
+		this.resetRemoved();
+		this.iterate('step',dt);
+		this.finalizeRemoved();
     };
 
     // Cuando Game.loop() llame a draw(), hay que llamar al método
     // draw() de todos los objetos contenidos en el tablero
     this.draw= function(ctx) {
-	this.iterate('draw',ctx);
+		this.iterate('draw',ctx);
     };
 
     // Comprobar si hay intersección entre los rectángulos que
