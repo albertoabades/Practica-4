@@ -127,6 +127,7 @@ var PlayerShip = function() {
     this.reload = this.reloadTime;
     this.x = Game.width/2 - this.w / 2;
     this.y = Game.height - 10 - this.h;
+	var up = false;
 
     this.step = function(dt) {
 	if(Game.keys['left']) { this.vx = -this.maxVel; }
@@ -143,12 +144,23 @@ var PlayerShip = function() {
 	this.reload-=dt;
 	if(Game.keys['fire'] && this.reload < 0) {
 	    // Esta pulsada la tecla de disparo y ya ha pasado el tiempo reload
-	    Game.keys['fire'] = false;
+		this.up = false;
+	    //Game.keys['fire'] = false;
 	    this.reload = this.reloadTime;
 
 	    // Se añaden al gameboard 2 misiles 
 	    this.board.add(new PlayerMissile(this.x,this.y+this.h/2));
 	    this.board.add(new PlayerMissile(this.x+this.w,this.y+this.h/2));
+	}
+	if(Game.keys['FireballDerecho'] && this.reload < 0){
+		Game.keys['FireballDerecho'] = false;
+		this.reload = this.reloadTime;
+		this.board.add(new Fireball(this.x,this.y,-1));
+	}
+	if(Game.keys['FireballIzquierdo'] && this.reload < 0){
+		Game.keys['FireballIzquierdo'] = false;
+		this.reload = this.reloadTime;
+		this.board.add(new Fireball(this.x,this.y,1));
 	}
     }
 }
@@ -260,6 +272,7 @@ Enemy.prototype.step = function(dt) {
 
     var collision = this.board.collide(this,OBJECT_PLAYER);
     if(collision) {
+	this.board.add(new Explosion(this.x + this.w/2,this.y+this.h/2));
 	collision.hit(this.damage);
 	this.board.remove(this);
     }
@@ -300,6 +313,33 @@ Explosion.prototype.step = function(dt) {
     }
 }
 
+var Fireball = function(x,y,direccion){
+	this.setup('explosion',{startX:x, startY: 10, vy: -700, vx: 30*direccion, desplazX: -20, desplazY: 30});
+	this.x = x - this.w/20;
+	this.y = y - this.h/10;
+}
+
+Fireball.prototype = new Sprite();
+
+Fireball.prototype.type = OBJECT_PLAYER_PROJECTILE;
+
+Fireball.prototype.step = function(dt){
+	this.x += dt*this.vx;
+	this.desplazX += dt * Math.abs(this.vx);
+	this.x += dt*this.vx;
+	this.y = this.desplazY + Math.pow(this.desplazX,2);
+
+	var collision = this.board.collide(this, OBJECT_ENEMY);
+	if(collision){
+		collision.hit(this.damage);
+	}else if (this.y > 500){
+		this.board.remove(this);
+	}
+}
+
+Fireball.prototype.draw = function(ctx){
+	SpriteSheet.draw(ctx, 'explosion', this.x, this.y, 1, 40, 40);
+}
 
 $(function() {
     Game.initialize("game",sprites,startGame);
