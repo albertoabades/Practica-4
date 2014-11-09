@@ -38,15 +38,15 @@ var Game = new function() {
     this.setupInput = function() {
 	$(window).keydown(function(event){
 	    if (KEY_CODES[event.which]) {
-		Game.keys[KEY_CODES[event.which]] = true;
-		return false;
+			Game.keys[KEY_CODES[event.which]] = true;
+			return false;
 	    }
 	});
 	
 	$(window).keyup(function(event){
 	    if (KEY_CODES[event.which]) {
-		Game.keys[KEY_CODES[event.which]] = false;
-		return false;
+			Game.keys[KEY_CODES[event.which]] = false;
+			return false;
 	    }
 	});
 	
@@ -58,19 +58,19 @@ var Game = new function() {
 
     this.loop = function() { 
 	// segundos transcurridos
-	var dt = 30 / 1000;
+		var dt = 30 / 1000;
 
-	// Para cada board, de 0 en adelante, se 
-	// llama a su método step() y luego a draw()
-	for(var i=0,len = boards.length;i<len;i++) {
-	    if(boards[i]) { 
-		boards[i].step(dt);
-		boards[i].draw(Game.ctx);
-	    }
-	}
+		// Para cada board, de 0 en adelante, se 
+		// llama a su método step() y luego a draw()
+		for(var i=0,len = boards.length;i<len;i++) {
+			if(boards[i]) { 
+				boards[i].step(dt);
+				boards[i].draw(Game.ctx);
+			}
+		}
 
 	// Ejecutar dentro de 30 ms
-	setTimeout(Game.loop,30);
+		setTimeout(Game.loop,30);
     };
     
     // Para cambiar el panel activo en el juego.
@@ -94,10 +94,10 @@ var SpriteSheet = new function() {
     // callback: para llamarla cuando se haya cargado la hoja de
     // sprites
     this.load = function(spriteData,callback) { 
-	this.map = spriteData;
-	this.image = new Image();
-	this.image.onload = callback;
-	this.image.src = 'images/sprites.png';
+		this.map = spriteData;
+		this.image = new Image();
+		this.image.onload = callback;
+		this.image.src = 'images/sprites.png';
     };
 
     
@@ -108,16 +108,16 @@ var SpriteSheet = new function() {
     //  frame para seleccionar el frame de un sprite que tenga varios
     //  como la explosion
     this.draw = function(ctx,sprite,x,y,frame,dw,dh) {
-	var s = this.map[sprite];
-	if(!frame) frame = 0;
-	if(!dw) {dw = s.w};
-	if(!dh) {dh = s.h};
-	ctx.drawImage(this.image,
-                      s.sx + frame * s.w, 
-                      s.sy, 
-                      s.w, s.h, 
-                      Math.floor(x), Math.floor(y),
-                      dw, dh);
+		var s = this.map[sprite];
+		if(!frame) frame = 0;
+		if(!dw) {dw = s.w};
+		if(!dh) {dh = s.h};
+		ctx.drawImage(this.image,
+		                  s.sx + frame * s.w, 
+		                  s.sy, 
+		                  s.w, s.h, 
+		                  Math.floor(x), Math.floor(y),
+		                  dw, dh);
     };
 }
 
@@ -136,19 +136,19 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
     // pulsada. Si comienza el juego con la tecla pulsada, hay que
     // soltarla y
     this.step = function(dt) {
-	if(!Game.keys['fire']) up = true;
-	if(up && Game.keys['fire'] && callback) callback();
+		if(!Game.keys['fire']) up = true;
+		if(up && Game.keys['fire'] && callback) callback();
     };
 
     this.draw = function(ctx) {
-	ctx.fillStyle = "#FFFFFF";
-	ctx.textAlign = "center";
+		ctx.fillStyle = "#FFFFFF";
+		ctx.textAlign = "center";
 
-	ctx.font = "bold 40px bangers";
-	ctx.fillText(title,Game.width/2,Game.height/2);
+		ctx.font = "bold 40px bangers";
+		ctx.fillText(title,Game.width/2,Game.height/2);
 
-	ctx.font = "bold 20px bangers";
-	ctx.fillText(subtitle,Game.width/2,Game.height/2 + 40);
+		ctx.font = "bold 20px bangers";
+		ctx.fillText(subtitle,Game.width/2,Game.height/2 + 40);
     };
 };
 
@@ -169,9 +169,9 @@ var GameBoard = function() {
 
     // Añade obj a objects
     this.add = function(obj) { 
-	obj.board=this;  // Para que obj pueda referenciar el tablero
-	this.objects.push(obj); 
-	return obj; 
+		obj.board=this;  // Para que obj pueda referenciar el tablero
+		this.objects.push(obj); 
+		return obj; 
     };
 
     // Los siguientes 3 métodos gestionan el borrado.  Cuando un board
@@ -182,7 +182,7 @@ var GameBoard = function() {
 
     // Marcar un objeto para borrar
     this.remove = function(obj) { 
-	this.removed.push(obj); 
+		this.removed.push(obj); 
     };
 
     // Inicializar la lista de objetos pendientes de ser borrados
@@ -190,14 +190,14 @@ var GameBoard = function() {
 
     // Elimina de objects los objetos pendientes de ser borrados
     this.finalizeRemoved = function() {
-	for(var i=0, len=this.removed.length; i<len;i++) {
-	    // Buscamos qué índice tiene en objects[] el objeto i de
-	    // removed[]
-	    var idx = this.objects.indexOf(this.removed[i]);
+		for(var i=0, len=this.removed.length; i<len;i++) {
+			// Buscamos qué índice tiene en objects[] el objeto i de
+			// removed[]
+			var idx = this.objects.indexOf(this.removed[i]);
 
-	    // splice elimina de objects el objeto en la posición idx
-	    if(idx != -1) this.objects.splice(idx,1); 
-	}
+			// splice elimina de objects el objeto en la posición idx
+			if(idx != -1) this.objects.splice(idx,1); 
+		}
     }
 
 
@@ -205,21 +205,21 @@ var GameBoard = function() {
     // objetos de objects
     this.iterate = function(funcName) {
 	// Convertimos en un array args (1..)
-	var args = Array.prototype.slice.call(arguments,1);
+		var args = Array.prototype.slice.call(arguments,1);
 
-	for(var i=0, len=this.objects.length; i<len;i++) {
-	    var obj = this.objects[i];
-	    obj[funcName].apply(obj,args)
-	}
+		for(var i=0, len=this.objects.length; i<len;i++) {
+			var obj = this.objects[i];
+			obj[funcName].apply(obj,args)
+		}
 
     };
 
     // Devuelve el primer objeto de objects para el que func es true
     this.detect = function(func) {
-	for(var i = 0,val=null, len=this.objects.length; i < len; i++) {
-	    if(func.call(this.objects[i])) return this.objects[i];
-	}
-	return false;
+		for(var i = 0,val=null, len=this.objects.length; i < len; i++) {
+			if(func.call(this.objects[i])) return this.objects[i];
+		}
+		return false;
     };
 
     // Cuando Game.loop() llame a step(), hay que llamar al método
@@ -227,36 +227,36 @@ var GameBoard = function() {
     // inicializa la lista de objetos pendientes de borrar, y después
     // se borran los que hayan aparecido en dicha lista
     this.step = function(dt) { 
-	this.resetRemoved();
-	this.iterate('step',dt);
-	this.finalizeRemoved();
+		this.resetRemoved();
+		this.iterate('step',dt);
+		this.finalizeRemoved();
     };
 
     // Cuando Game.loop() llame a draw(), hay que llamar al método
     // draw() de todos los objetos contenidos en el tablero
     this.draw= function(ctx) {
-	this.iterate('draw',ctx);
+		this.iterate('draw',ctx);
     };
 
     // Comprobar si hay intersección entre los rectángulos que
     // circunscriben a los objetos o1 y o2
     this.overlap = function(o1,o2) {
-	// return !((o1 encima de o2)    || (o1 debajo de o2)   ||
-        //          (o1 a la izda de o2) || (o1 a la dcha de o2)
-	return !((o1.y+o1.h-1<o2.y) || (o1.y>o2.y+o2.h-1) ||
-		 (o1.x+o1.w-1<o2.x) || (o1.x>o2.x+o2.w-1));
+		// return !((o1 encima de o2)    || (o1 debajo de o2)   ||
+		    //          (o1 a la izda de o2) || (o1 a la dcha de o2)
+		return !((o1.y+o1.h-1<o2.y) || (o1.y>o2.y+o2.h-1) ||
+			 (o1.x+o1.w-1<o2.x) || (o1.x>o2.x+o2.w-1));
     };
 
     // Encontrar el primer objeto de tipo type que colisiona con obj
     // Si se llama sin type, en contrar el primer objeto de cualquier
     // tipo que colisiona con obj
     this.collide = function(obj,type) {
-	return this.detect(function() {
-	    if(obj != this) {
-		var col = (!type || this.type & type) && board.overlap(obj,this)
-		return col ? this : false;
-	    }
-	});
+		return this.detect(function() {
+			if(obj != this) {
+			var col = (!type || this.type & type) && board.overlap(obj,this)
+			return col ? this : false;
+			}
+		});
     };
 
 
@@ -276,9 +276,9 @@ Sprite.prototype.setup = function(sprite,props) {
 
 Sprite.prototype.merge = function(props) {
     if(props) {
-	for (var prop in props) {
-	    this[prop] = props[prop];
-	}
+		for (var prop in props) {
+			this[prop] = props[prop];
+		}
     }
 }
 
